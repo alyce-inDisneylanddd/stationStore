@@ -5,6 +5,9 @@
     #include <sstream>
     #include <vector>
     #include <fstream>
+    #include <list>
+    #include <map>
+    #include <tuple>
     using namespace std;
 
 #endif  
