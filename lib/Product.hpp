@@ -34,7 +34,7 @@ class ProductTree{
         return this->root;
     }
 
-    //Operation on Tree: insert, delete, edit
+    //Operation on Tree: insert, edit, delete, search
 
     //insert
     ProductNode *insert(ProductNode *root, const Product &product)
@@ -56,7 +56,30 @@ class ProductTree{
         }
         return root;
     }
-
+    // edit
+    ProductNode *edit_node(ProductNode *root, int inputID) {
+        if(root == nullptr){
+            cout << "input does not exist" << endl;
+            return root;
+        } else if (inputID > root->product.product_ID)
+        { // go right
+            root->right = edit_node(root->right, inputID);
+        }
+        else if (inputID < root->product.product_ID)
+        { // go left
+            root->left = edit_node(root->left, inputID);
+        } 
+        if(inputID == root->product.product_ID) {
+            cout << "found a node with input ID" << endl;
+            cout << "enter new quantity: ";
+            cin >> root->product.product_quantity; 
+            cout << "enter new price: ";
+            cin >> root->product.product_price; 
+            cout << "update completed" << endl;
+            
+        }
+        return root;
+    }
 
 
     //delete
@@ -111,10 +134,52 @@ class ProductTree{
         return temp;
     }
 
+    ProductNode *search_node(ProductNode *root, int inputID) {
+        if(root == nullptr){
+            //cout << "input does not exist" << endl;
+            return root;
+        } else if (inputID > root->product.product_ID)
+        { // go right
+            root->right = edit_node(root->right, inputID);
+        }
+        else if (inputID < root->product.product_ID)
+        { // go left
+            root->left = edit_node(root->left, inputID);
+        } 
+        return root;
+    }
+
     //Functions for main
+
+    // view product 
+    void view() {
+        int i = 1;
+        inOrder_traversal(root,i);
+    }
+    // add product
     void add(const Product &product) {
         this->root  = insert(root, product);
         treeSize++;
+        saveProductListToFile(root);
+    }
+    bool search(int inputID){
+        this -> root = search_node(root, inputID);
+        if(root == nullptr) {
+            return false;
+        }
+        return true;
+    }
+    //edit product
+    void edit(int inputID) {
+        this ->root = edit_node(root, inputID);
+        saveProductListToFile(root);
+    }
+
+    // remove product
+    void remove(int inputID) {
+        this -> root = delete_node(root, inputID);
+        treeSize--;
+        saveProductListToFile(root);
     }
 
 
@@ -165,12 +230,9 @@ class ProductTree{
         productList_file.close();
     }
 
-    //Write tree to file
+
     void writeToFile(ProductNode *node, fstream &file)
     {
-        // cout << endl;
-        // cout << node->product.product_ID << " ";
-        // cout << "reach Write to file" << endl;
         if (node == nullptr)
         {
             return;
@@ -187,23 +249,10 @@ class ProductTree{
     void saveProductListToFile(ProductNode *root)
     {
 
-        // fstream file("productList.csv");
-        // if (!file)
-        // {
-        //     cout << endl;
-        //     cout << "File does not exist. Creating new file." << endl;
-        //     file.open("productList.csv", ios::out);
-        // }
-        fstream file("db/productList.csv");
+        fstream file("db/productList.csv", ios::out);
         if(!file) {
             cout << endl << "fail to open productList.csv" << endl;
         }
-        // file.open("productList.csv", ios::app);
-        // if (!file.is_open())
-        // {
-        //     cout << "Cannot open file!" << endl;
-        //     return;
-        // }
 
         file << "ID,Product Name,Quantity,Price (USD)\n";
         writeToFile(root, file);
@@ -217,43 +266,17 @@ class ProductTree{
         if (root != NULL)
         {
             inOrder_traversal(root->left, number);
-            // if (who_enter == 2)
-            // {
-            //     // for user
-            //     cout << "| " << setw(5) << left << number
-            //          << " | " << setw(30) << left << root->product.product_name
-            //          << " | $ " << setw(12) << root->product.product_price
-            //          << " |\n";
-            //     number++;
-            // }
-            // else if (who_enter == 1)
-            //{
-                // for admin
-                cout << "| " << setw(10) << left << root->product.product_ID
+            cout << "| " << setw(10) << left << root->product.product_ID
                      << " | " << setw(5) << left << number
                      << " | " << setw(30) << left << root->product.product_name
                      << " | " << setw(10) << root->product.product_quantity
                      << " | " << setw(14) << root->product.product_price
                      << " |\n";
-            //}
-
             number++;
             inOrder_traversal(root->right, number);
         }
     }
 
-
-    //Operations for program interface
-    
-
-
-    void deleteProduct()  
-    {
-        saveProductListToFile(root);
-    }
-
-
-    
 };
 
 #endif 
