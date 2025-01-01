@@ -9,6 +9,7 @@ struct Product
     string product_name;
     int product_quantity;
     float product_price;
+    
 };
 
 struct ProductNode {
@@ -27,6 +28,10 @@ class ProductTree{
     ProductTree() {
         root = nullptr;
         treeSize = 0;
+    }
+
+    ProductNode *getRoot() {
+        return this->root;
     }
 
     //Operation on Tree: insert, delete, edit
@@ -52,11 +57,7 @@ class ProductTree{
         return root;
     }
 
-    void add(const Product &product)
-    {
-        root = insert(root, product);
-        treeSize++;
-    }
+
 
     //delete
     ProductNode *delete_node(ProductNode *root, int delete_id)
@@ -90,7 +91,7 @@ class ProductTree{
             }
             else
             {
-                // node that has 2 childre
+                // node that has 2 children
                 ProductNode *temp = minValue(root->right);
                 root->product.product_ID = temp->product.product_ID;
                 root->right = delete_node(root->right, temp->product.product_ID);
@@ -109,6 +110,13 @@ class ProductTree{
         }
         return temp;
     }
+
+    //Functions for main
+    void add(const Product &product) {
+        this->root  = insert(root, product);
+        treeSize++;
+    }
+
 
 
     //Operation: load data to tree, save tree to file
@@ -203,23 +211,23 @@ class ProductTree{
     }
 
 
-    void inOrder_traversal(ProductNode *root, int &number, int who_enter)
+    void inOrder_traversal(ProductNode *root, int &number)
     {
 
         if (root != NULL)
         {
-            inOrder_traversal(root->left, number, who_enter);
-            if (who_enter == 2)
-            {
-                // for user
-                cout << "| " << setw(5) << left << number
-                     << " | " << setw(30) << left << root->product.product_name
-                     << " | $ " << setw(12) << root->product.product_price
-                     << " |\n";
-                number++;
-            }
-            else if (who_enter == 1)
-            {
+            inOrder_traversal(root->left, number);
+            // if (who_enter == 2)
+            // {
+            //     // for user
+            //     cout << "| " << setw(5) << left << number
+            //          << " | " << setw(30) << left << root->product.product_name
+            //          << " | $ " << setw(12) << root->product.product_price
+            //          << " |\n";
+            //     number++;
+            // }
+            // else if (who_enter == 1)
+            //{
                 // for admin
                 cout << "| " << setw(10) << left << root->product.product_ID
                      << " | " << setw(5) << left << number
@@ -227,14 +235,16 @@ class ProductTree{
                      << " | " << setw(10) << root->product.product_quantity
                      << " | " << setw(14) << root->product.product_price
                      << " |\n";
-            }
+            //}
 
             number++;
-            inOrder_traversal(root->right, number, who_enter);
+            inOrder_traversal(root->right, number);
         }
     }
 
 
+    //Operations for program interface
+    
 
 
     void deleteProduct()  
