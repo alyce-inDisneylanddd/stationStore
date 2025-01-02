@@ -134,20 +134,18 @@ class ProductTree{
         return temp;
     }
 
-    ProductNode *search_node(ProductNode *root, int inputID) {
-        if(root == nullptr){
-            //cout << "input does not exist" << endl;
+    ProductNode* search_node(ProductNode* root, int inputID) {
+        if (root == nullptr || root->product.product_ID == inputID) {
             return root;
-        } else if (inputID > root->product.product_ID)
-        { // go right
-            root->right = edit_node(root->right, inputID);
         }
-        else if (inputID < root->product.product_ID)
-        { // go left
-            root->left = edit_node(root->left, inputID);
-        } 
-        return root;
+
+        if (inputID > root->product.product_ID) {
+            return search_node(root->right, inputID);
+        } else {
+            return search_node(root->left, inputID);
+        }
     }
+
 
     //Functions for main
 
