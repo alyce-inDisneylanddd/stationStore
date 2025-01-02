@@ -4,8 +4,8 @@
 
 class OrderList{
     public:
-    list<tuple<string, string, string, string, bool>> orderList;
-    //<usrName, prdID, prdName, totalPrice, status>
+    list<tuple<string, string, string, string, string>> orderList;
+    //<usrName, prdID, prdName, totalPrice, time>
 };
 
 #endif 
