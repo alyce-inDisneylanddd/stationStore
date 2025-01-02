@@ -9,6 +9,7 @@ struct Product
     string product_name;
     int product_quantity;
     float product_price;
+    
 };
 
 struct ProductNode {
@@ -29,7 +30,11 @@ class ProductTree{
         treeSize = 0;
     }
 
-    //Operation on Tree: insert, delete, edit
+    ProductNode *getRoot() {
+        return this->root;
+    }
+
+    //Operation on Tree: insert, edit, delete, search
 
     //insert
     ProductNode *insert(ProductNode *root, const Product &product)
@@ -51,12 +56,31 @@ class ProductTree{
         }
         return root;
     }
-
-    void add(const Product &product)
-    {
-        root = insert(root, product);
-        treeSize++;
+    // edit
+    ProductNode *edit_node(ProductNode *root, int inputID) {
+        if(root == nullptr){
+            cout << "input does not exist" << endl;
+            return root;
+        } else if (inputID > root->product.product_ID)
+        { // go right
+            root->right = edit_node(root->right, inputID);
+        }
+        else if (inputID < root->product.product_ID)
+        { // go left
+            root->left = edit_node(root->left, inputID);
+        } 
+        if(inputID == root->product.product_ID) {
+            cout << "found a node with input ID" << endl;
+            cout << "enter new quantity: ";
+            cin >> root->product.product_quantity; 
+            cout << "enter new price: ";
+            cin >> root->product.product_price; 
+            cout << "update completed" << endl;
+            
+        }
+        return root;
     }
+
 
     //delete
     ProductNode *delete_node(ProductNode *root, int delete_id)
@@ -90,7 +114,7 @@ class ProductTree{
             }
             else
             {
-                // node that has 2 childre
+                // node that has 2 children
                 ProductNode *temp = minValue(root->right);
                 root->product.product_ID = temp->product.product_ID;
                 root->right = delete_node(root->right, temp->product.product_ID);
@@ -109,6 +133,53 @@ class ProductTree{
         }
         return temp;
     }
+
+    ProductNode* search_node(ProductNode* root, int inputID) {
+        if (root == nullptr || root->product.product_ID == inputID) {
+            return root;
+        }
+
+        if (inputID > root->product.product_ID) {
+            return search_node(root->right, inputID);
+        } else {
+            return search_node(root->left, inputID);
+        }
+    }
+
+
+    //Functions for main
+
+    // view product 
+    void view() {
+        int i = 1;
+        inOrder_traversal(root,i);
+    }
+    // add product
+    void add(const Product &product) {
+        this->root  = insert(root, product);
+        treeSize++;
+        saveProductListToFile(root);
+    }
+    bool search(int inputID){
+        this -> root = search_node(root, inputID);
+        if(root == nullptr) {
+            return false;
+        }
+        return true;
+    }
+    //edit product
+    void edit(int inputID) {
+        this ->root = edit_node(root, inputID);
+        saveProductListToFile(root);
+    }
+
+    // remove product
+    void remove(int inputID) {
+        this -> root = delete_node(root, inputID);
+        treeSize--;
+        saveProductListToFile(root);
+    }
+
 
 
     //Operation: load data to tree, save tree to file
@@ -157,12 +228,9 @@ class ProductTree{
         productList_file.close();
     }
 
-    //Write tree to file
+
     void writeToFile(ProductNode *node, fstream &file)
     {
-        // cout << endl;
-        // cout << node->product.product_ID << " ";
-        // cout << "reach Write to file" << endl;
         if (node == nullptr)
         {
             return;
@@ -179,23 +247,10 @@ class ProductTree{
     void saveProductListToFile(ProductNode *root)
     {
 
-        // fstream file("productList.csv");
-        // if (!file)
-        // {
-        //     cout << endl;
-        //     cout << "File does not exist. Creating new file." << endl;
-        //     file.open("productList.csv", ios::out);
-        // }
-        fstream file("db/productList.csv");
+        fstream file("db/productList.csv", ios::out);
         if(!file) {
             cout << endl << "fail to open productList.csv" << endl;
         }
-        // file.open("productList.csv", ios::app);
-        // if (!file.is_open())
-        // {
-        //     cout << "Cannot open file!" << endl;
-        //     return;
-        // }
 
         file << "ID,Product Name,Quantity,Price (USD)\n";
         writeToFile(root, file);
@@ -203,47 +258,83 @@ class ProductTree{
     }
 
 
-    void inOrder_traversal(ProductNode *root, int &number, int who_enter)
+    void inOrder_traversal(ProductNode *root, int &number)
     {
 
         if (root != NULL)
         {
-            inOrder_traversal(root->left, number, who_enter);
-            if (who_enter == 2)
-            {
-                // for user
-                cout << "| " << setw(5) << left << number
-                     << " | " << setw(30) << left << root->product.product_name
-                     << " | $ " << setw(12) << root->product.product_price
-                     << " |\n";
-                number++;
-            }
-            else if (who_enter == 1)
-            {
-                // for admin
-                cout << "| " << setw(10) << left << root->product.product_ID
+            inOrder_traversal(root->left, number);
+            cout << "| " << setw(10) << left << root->product.product_ID
                      << " | " << setw(5) << left << number
                      << " | " << setw(30) << left << root->product.product_name
                      << " | " << setw(10) << root->product.product_quantity
                      << " | " << setw(14) << root->product.product_price
                      << " |\n";
-            }
-
             number++;
-            inOrder_traversal(root->right, number, who_enter);
+            inOrder_traversal(root->right, number);
         }
     }
 
+    void printPage(ProductNode *root, int& count, int start, int end) {
+        if(!root) return;
 
-
-
-    void deleteProduct()  
-    {
-        saveProductListToFile(root);
+        printPage(root->left, count, start, end);
+        if(count >= start && count < end) {
+            cout << "| " << setw(10) << left << root->product.product_ID
+                     << " | " << setw(5) << left << count+1
+                     << " | " << setw(30) << left << root->product.product_name
+                     << " | " << setw(10) << root->product.product_quantity
+                     << " | " << setw(14) << root->product.product_price
+                     << " |\n";
+        }
+        count++;
+        if(count >= end) return;
+        printPage(root->right, count, start, end);
     }
 
+    int countNodes (ProductNode *root) {
+        if(root == nullptr) return 0;
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
 
-    
+    void show() {
+        const int itemPerPage = 5;
+        int totalNodes = countNodes(root);
+        int totalPages = (totalNodes + itemPerPage - 1) / itemPerPage;
+        int currentPage = 0;
+        while(1) {
+            clearScreen();
+            int start = currentPage * itemPerPage;
+            int end = start + itemPerPage;
+            int count = 0;
+            cout << "== Product list ==" << endl;
+            cout << "Page " << currentPage+1 << " of " << totalPages << endl;
+            cout << "Total products: " << totalNodes << endl;
+            for(int i = 0; i < 85; i++) cout<<"=";
+            cout << endl;
+            cout << "| " << setw(10) << left << "   ID"
+                     << " | " << setw(5) << left << " No."
+                     << " | " << setw(30) << left << "   Name"
+                     << " | " << setw(10) << " Quantity"
+                     << " | " << setw(14) << " Price $"
+                     << " |\n";
+            for(int i = 0; i < 85; i++) cout<<"-";
+            cout << endl;
+            printPage(root, count, start, end);
+            for(int i = 0; i < 85; i++) cout<<"-";
+            cout << endl;
+            cout << "Previous page: <-, Next page: ->, Back: q" << endl;
+            string navInput = readNav();
+            if (navInput == "exit") {
+                break;
+            } else if (navInput == "left") {
+                if (currentPage > 0) currentPage--;
+            } else if (navInput == "right") {
+                if (currentPage < totalPages - 1) currentPage++;
+            }
+        }
+    }
+
 };
 
 #endif 
