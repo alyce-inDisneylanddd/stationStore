@@ -335,6 +335,44 @@ class ProductTree{
         }
     }
 
+    void showToSelect() {
+        const int itemPerPage = 5;
+        int totalNodes = countNodes(root);
+        int totalPages = (totalNodes + itemPerPage - 1) / itemPerPage;
+        int currentPage = 0;
+        while(1) {
+            clearScreen();
+            int start = currentPage * itemPerPage;
+            int end = start + itemPerPage;
+            int count = 0;
+            cout << "== Product list ==" << endl;
+            cout << "Page " << currentPage+1 << " of " << totalPages << endl;
+            cout << "Total products: " << totalNodes << endl;
+            for(int i = 0; i < 85; i++) cout<<"=";
+            cout << endl;
+            cout << "| " << setw(10) << left << "   ID"
+                     << " | " << setw(5) << left << " No."
+                     << " | " << setw(30) << left << "   Name"
+                     << " | " << setw(10) << " Quantity"
+                     << " | " << setw(14) << " Price $"
+                     << " |\n";
+            for(int i = 0; i < 85; i++) cout<<"-";
+            cout << endl;
+            printPage(root, count, start, end);
+            for(int i = 0; i < 85; i++) cout<<"-";
+            cout << endl;
+            cout << "Previous page: <-, Next page: ->, Select: q" << endl;
+            string navInput = readNav();
+            if (navInput == "exit") {
+                break;
+            } else if (navInput == "left") {
+                if (currentPage > 0) currentPage--;
+            } else if (navInput == "right") {
+                if (currentPage < totalPages - 1) currentPage++;
+            }
+        }
+    }
+
 };
 
 #endif 

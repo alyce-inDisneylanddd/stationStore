@@ -18,7 +18,7 @@
         #define OS "Windows 32-bit"
         #include <conio.h>
         string readArrowKeys() {
-            std::cout << "Press arrow keys or 'q' to quit.\n";
+            //std::cout << "Press arrow keys or 'q' to quit.\n";
             while (true) {
                 int ch = _getch(); // Read the first character
 
@@ -27,18 +27,18 @@
 
                     switch (ch) {
                         case 77: // Right arrow
-                            std::cout << "Right arrow key pressed.\n";
+                            //std::cout << "Right arrow key pressed.\n";
                             return "right";
                             break;
                         case 75: // Left arrow
-                            std::cout << "Left arrow key pressed.\n";
+                            //std::cout << "Left arrow key pressed.\n";
                             return "left";
                             break;
                         default:
-                            std::cout << "Unknown key pressed.\n";
+                           std::cout << "Unknown key pressed.\n";
                     }
                 } else if (ch == 'q' || ch == 'Q') { // Press 'q' to quit
-                    std::cout << "Exiting...\n";
+                    //std::cout << "Exiting...\n";
                     return "exit";
                     break;
                 }
