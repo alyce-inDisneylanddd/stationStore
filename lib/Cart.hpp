@@ -86,6 +86,40 @@ class CartList{
             
     }
 
+    void display_receipt() {
+        float grandTotal = 0;
+        if (cartList.empty()) {
+            cout << "Your cart is empty!" << endl;
+            return;
+        }
+        for(int i = 0; i < 94; i++) cout<<"=";
+        cout << endl;
+        cout << "| " << setw(10) << left << "   ID"
+                    << " | " << setw(30) << left << "   Name"
+                    << " | " << setw(10) << left << " Quantity"
+                    << " | " << setw(14) << " Unit Price"
+                    << " | " << setw(14) << " Total Price"
+                    << " |\n";
+        for(int i = 0; i < 94; i++) cout<<"-";
+        cout << endl;                 
+        
+
+        for (const auto& entry : cartList) {
+            grandTotal += get<4>(entry);
+            cout << "| " << setw(10) << left << get<0>(entry)
+                            << " | " << setw(30) << left << get<1>(entry)
+                            << " | " << setw(10) << left  << get<2>(entry)
+                            << " | " << setw(14) << get<3>(entry)
+                            << " | " << setw(14) << get<4>(entry)
+                            << " |\n";
+
+        }
+
+        for(int i = 0; i < 94; i++) cout<<"-";
+        cout << endl;  
+        cout << "Grand total: " << grandTotal << endl;
+            
+    }
 
 
     void edit(int inputID, ProductTree &pTree) {
