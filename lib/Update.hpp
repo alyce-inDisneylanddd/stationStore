@@ -1,6 +1,8 @@
 #include "Cart.hpp"
 #include "Order.hpp"
 
+OrderList user_order;
+
 void updateCheckout(ProductTree &pTree, CartList cart){
     for(auto entry = cart.cartList.begin(); entry != cart.cartList.end(); entry++) {
         int searchID = get<0>(*entry);
@@ -15,6 +17,7 @@ void updateCheckout(ProductTree &pTree, CartList cart){
             cout << "not found" << endl;
         }
     }
+    user_order.writeOrderToDB();
     // call this to update db pTree.saveProductListToFile(pTree.getRoot());
 }
 
