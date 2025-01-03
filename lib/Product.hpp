@@ -161,11 +161,7 @@ class ProductTree{
         saveProductListToFile(root);
     }
     bool search(int inputID){
-        this -> root = search_node(root, inputID);
-        if(root == nullptr) {
-            return false;
-        }
-        return true;
+        return search_node(root, inputID);
     }
     //edit product
     void edit(int inputID) {
