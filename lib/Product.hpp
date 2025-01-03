@@ -3,6 +3,9 @@
 
 #include "cmn.hpp"
 
+class Cart; 
+
+
 struct Product
 {
     int product_ID;
@@ -368,6 +371,10 @@ class ProductTree{
             }
         }
     }
+
+    // void updateCheckout(CartList cartList) {
+
+    // }
 
 };
 

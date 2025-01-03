@@ -1,7 +1,9 @@
 #ifndef CART_HPP
 #define CART_HPP
-// #include "lib/cmn.hpp"
+
 #include "Product.hpp"
+class Product;
+
 
 class CartList{
     public:
